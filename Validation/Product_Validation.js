@@ -5,7 +5,8 @@ const Validation = Joi.object({
     price: Joi.number().required().positive(),
     color: Joi.string().optional(),
     img: Joi.string().required(),
-    categorie: Joi.string().required()
+    categorie: Joi.string().required(),
+    user_id: Joi.string(),
 
 })
 
