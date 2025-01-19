@@ -4,16 +4,18 @@ const Product = require("./router/Product.router")
 const Categorie = require("./router/Categoriy.router")
 const User = require("./router/User.router")
 require("dotenv").config()
+const file =require("./middlewares/Multer")
 
 ConnectDB()
 const app = express()
 app.use(express.json())
 
+app.use("/file", file)
 app.use("/categorie", Categorie)
 app.use("/product", Product)
 app.use("/user", User)
 
-app.get("*",  (req,res)=>{
+app.get("*", (req,res)=>{
     res.status(404).send({message: "Not Found"})
 })
 app.listen(process.env.PORT, ()=>{

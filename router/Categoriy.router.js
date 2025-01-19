@@ -2,6 +2,7 @@ const express = require("express")
 const Categorie = require("../model/Categoriy");
 const Validation = require("../Validation/Categorie_Validation");
 const Validation_PATCH = require("../Validation/Categorie_ValidationPATCH");
+const IsToken = require("../middlewares/IsTiken");
 
 const rout = express.Router()
 
@@ -9,7 +10,7 @@ rout.get("/", async (req,res)=>{
     let data = await Categorie.find()
     res.status(200).send({data})
 })
-rout.post("/", async (req,res)=>{
+rout.post("/",IsToken, async (req,res)=>{
     let {error,value} = Validation.validate(req.body)
     if(error){
         res.status(400).send({message: error.message})
@@ -19,7 +20,7 @@ rout.post("/", async (req,res)=>{
     await newD.save();
     res.status(201).send({newD})
 })
-rout.patch("/:id", async (req,res)=>{
+rout.patch("/:id",IsToken, async (req,res)=>{
     let {error, value} = Validation_PATCH.validate(req.body)
     if(error){
         res.status(400).send({message: error.message})
@@ -29,7 +30,7 @@ rout.patch("/:id", async (req,res)=>{
     newD.save()
     res.status(201).send({newD})
 })
-rout.delete("/:id", async (req,res)=>{
+rout.delete("/:id",IsToken, async (req,res)=>{
     let Delete = await Categorie.findByIdAndDelete(req.params.id)
     if(Delete){
         res.status(202).send({delete: Delete})

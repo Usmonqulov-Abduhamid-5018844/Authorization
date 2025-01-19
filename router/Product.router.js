@@ -2,6 +2,7 @@ const express = require("express")
 const Product = require("../model/Product")
 const Validation = require("../Validation/Product_Validation")
 const ValidationPATCH = require("../Validation/Product_ValidationPATCH")
+const IsToken = require(("../middlewares/IsTiken"))
 
 const rout = express.Router()
 
@@ -9,7 +10,7 @@ rout.get("/", async (req,res)=>{
     let data = await Product.find()
     res.status(200).send({data})
 })
-rout.post("/", async (req,res)=>{
+rout.post("/",IsToken, async (req,res)=>{
     let {error, value} = Validation.validate(req.body)
     if(error){
         res.status(400).send({message: error.message})
@@ -19,7 +20,7 @@ rout.post("/", async (req,res)=>{
     await newD.save()
     res.status(201).send({message: "creted",data: newD})
 })
-rout.patch("/:id", async (req,res)=>{
+rout.patch("/:id",IsToken, async (req,res)=>{
     let {error, value} = ValidationPATCH.validate(req.body)
     if(error){
         res.status(400).send({messale: error.message})
@@ -30,7 +31,7 @@ rout.patch("/:id", async (req,res)=>{
     res.status(202).send({message: "Update", data: newD})
 })
 
-rout.delete("/:id", async (req,res)=>{  
+rout.delete("/:id",IsToken, async (req,res)=>{  
     let newD = await Product.findByIdAndDelete({_id : req.params.id})
     if(newD){
         res.status(202).send({message: "Delete", data: newD})

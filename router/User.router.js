@@ -2,9 +2,10 @@ const express = require("express");
 const User = require("../model/User");
 const Validation_R = require("../Validation/Register_Validation");
 const Validation_L = require("../Validation/Login_Validation")
-const Token = require("jsonwebtoken")
+const Jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const rout = express.Router()
+const IsTiken = require("../middlewares/IsTiken")
 
 rout.post("/register", async (req,res)=>{
     let {error, value} = Validation_R.validate(req.body);
@@ -46,11 +47,14 @@ rout.post("/login", async (req,res)=>{
         res.status(400).send({message: "Password Noto'g'ri kritildi"}) 
         return  
     }
-    res.send("KO")
+    let Token = Jwt.sign({
+        id:user.id,
+        email: user.Email
+    },process.env.BCRYPT_PAROL)
+    res.send({Token})
 
 })
-
-rout.get("/", async (req,res)=>{
+rout.get("/",IsTiken, async (req,res)=>{
     let data = await User.find()
     res.status(200).send({message: data})
 })
